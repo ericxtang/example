@@ -1,38 +1,35 @@
 version: 2
 jobs:
-  build:
+  build-and-release:
     docker:
       - image: circleci/golang:1.10.3-stretch
     steps:
       - checkout
 
-      - run: go get -d ./...
-      - run: GOOS=linux go build -o ~/artifacts/hello_linux hello/hello.go
-      - run: GOOS=darwin go build -o ~/artifacts/hello_darwin hello/hello.go
-      - run: GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
-      - run: go get github.com/tcnksm/ghr 
       - run:
           name: "Publish Release"
           command: |
-            VERSION=$(~/artifacts/hello_linux -version) 
+            cd ${CIRCLE_WORKING_DIRECTORY}
+            go get -d ./...
+
+            GOOS=linux go build -o ~/artifacts/hello_linux hello/hello.go
+            GOOS=darwin go build -o ~/artifacts/hello_darwin hello/hello.go
+            GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
+
+            VERSION=$(~/artifacts/hello_linux -version)
             HTTPS_URL="https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/tag/${VERSION}"
-            CURL_CMD="curl -w httpcode=%{http_code}"
-
-            CURL_MAX_CONNECTION_TIMEOUT="-m 100"
-
-            CURL_RETURN_CODE=0
-            CURL_OUTPUT=`${CURL_CMD} ${CURL_MAX_CONNECTION_TIMEOUT} ${HTTPS_URL} 2> /dev/null` || CURL_RETURN_CODE=$?
-            if [ ${CURL_RETURN_CODE} -ne 0 ]; then  
-              echo "Release Already Made"
+            STATUS=$(curl -s -o /dev/null -w '%{http_code}' ${HTTPS_URL})
+            if [ $STATUS -eq 200 ]; then
+            	echo "Release Already Made"
             else
-              ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/
+              go get github.com/tcnksm/ghr 
+            	ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/
             fi
-
       - store_artifacts:
           path: ~/artifacts
 
 workflows:
   version: 2
-  build_and_release: 
+  main: 
     jobs: 
-      - build
+      - build-and-release
