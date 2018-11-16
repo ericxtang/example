@@ -6,16 +6,14 @@ jobs:
     steps:
       - checkout
 
+      - run: go get -d ./...
+      - run: GOOS=linux go build -o ~/artifacts/hello_linux hello/hello.go
+      - run: GOOS=darwin go build -o ~/artifacts/hello_darwin hello/hello.go
+      - run: GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
+
       - run:
           name: "Publish Release"
           command: |
-            cd ${CIRCLE_WORKING_DIRECTORY}
-            go get -d ./...
-
-            GOOS=linux go build -o ~/artifacts/hello_linux hello/hello.go
-            GOOS=darwin go build -o ~/artifacts/hello_darwin hello/hello.go
-            GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
-
             VERSION=$(~/artifacts/hello_linux -version)
             HTTPS_URL="https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/tag/${VERSION}"
             STATUS=$(curl -s -o /dev/null -w '%{http_code}' ${HTTPS_URL})
