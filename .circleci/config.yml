@@ -6,6 +6,21 @@ jobs:
     steps:
       - checkout
       - run: go get -d ./...
-      - run: GOOS=linux go build -o hello_linux hello/hello.go
-      - run: GOOS=darwin go build -o hello_darwin hello/hello.go
-      - run: GOOS=windows go build -o hello_windows hello/hello.go
+      - run: GOOS=linux go build -o ~/artifacts/hello_linux hello/hello.go
+      - run: GOOS=darwin go build -o ~/artifacts/hello_darwin hello/hello.go
+      - run: GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
+  publish-github-release:
+    requires:
+      - build
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /^v\d+\.\d+\.\d+$/
+      steps:
+        - run:
+          name: "Publish Release on GitHub"
+          command: |
+            go get github.com/tcnksm/ghr
+            VERSION=$(my-binary --version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/

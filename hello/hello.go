@@ -18,10 +18,15 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/golang/example/stringutil"
 )
 
 func main() {
 	fmt.Println(stringutil.Reverse("!selpmaxe oG ,olleH"))
+	arg := os.Args[1]
+	if arg == "-version" {
+		fmt.Println("v0.0.1")
+	}
 }
