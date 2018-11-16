@@ -1,16 +1,15 @@
 workflows:
   version: 2
-  main:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only: /^\d+\.\d+\.\d+$/
-          steps:
-            - checkout
-            - run: GOOS=linux go build -o hello_linux hello/hello.go
-            - run: GOOS=darwin go build -o hello_darwin hello/hello.go
-            - run: GOOS=windows go build -o hello_windows hello/hello.go
+  jobs:
+    - build:
+        filters:
+          tags:
+            only: /^\d+\.\d+\.\d+$/
+        steps:
+          - checkout
+          - run: GOOS=linux go build -o hello_linux hello/hello.go
+          - run: GOOS=darwin go build -o hello_darwin hello/hello.go
+          - run: GOOS=windows go build -o hello_windows hello/hello.go
       # - publish-github-release:
       #     requires:
       #       - build
