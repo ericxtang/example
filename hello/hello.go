@@ -27,6 +27,6 @@ func main() {
 	fmt.Println(stringutil.Reverse("!selpmaxe oG ,olleH"))
 	arg := os.Args[1]
 	if arg == "-version" {
-		fmt.Println("v0.0.8")
+		fmt.Println("v0.0.9")
 	}
 }

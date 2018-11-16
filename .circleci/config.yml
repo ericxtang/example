@@ -14,7 +14,7 @@ jobs:
       - image: circleci/golang:1.10.3-stretch
     steps:
       - run: go get github.com/tcnksm/ghr 
-      - run: export VERSION=$(my-binary --version) 
+      - run: export VERSION=$(~/artifacts/hello_linux -version) 
       - run: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/
 
 workflows:
