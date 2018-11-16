@@ -12,13 +12,13 @@ jobs:
       - run: GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
 
       - store_artifacts:
-        path: ~/artifacts
+          path: ~/artifacts
   publish-github-release:
     docker:
       - image: circleci/golang:1.10.3-stretch
     steps:
       - attach_workspace:
-        at: ~/artifacts
+          at: ~/artifacts
       - run: go get github.com/tcnksm/ghr 
       - run: export VERSION=$(~/artifacts/hello_linux -version) 
       - run: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/
