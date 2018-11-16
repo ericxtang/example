@@ -28,6 +28,6 @@ workflows:
   build_and_release: 
     jobs: 
       - build
+
       - publish-github-release
-          requires:
-            - build
+          requires: build
