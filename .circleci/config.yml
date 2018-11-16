@@ -18,7 +18,6 @@ jobs:
       tags:
         only: /^v\d+\.\d+\.\d+$/
       steps:
-        - run:
-            go get github.com/tcnksm/ghr &
-            VERSION=$(my-binary --version) &
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/
+        - run: go get github.com/tcnksm/ghr 
+        - run: export VERSION=$(my-binary --version) 
+        - run: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/
