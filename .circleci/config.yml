@@ -18,8 +18,6 @@ jobs:
       branches:
         only: 
           - master
-      tags:
-        only: /^v\d+\.\d+\.\d+$/
     steps:
       - run: go get github.com/tcnksm/ghr 
       - run: export VERSION=$(my-binary --version) 
