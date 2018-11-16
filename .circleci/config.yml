@@ -5,6 +5,7 @@ jobs:
       - image: circleci/golang:1.10.3-stretch
     steps:
       - checkout
+      - run: go get -d ./...
       - run: GOOS=linux go build -o hello_linux hello/hello.go
       - run: GOOS=darwin go build -o hello_darwin hello/hello.go
       - run: GOOS=windows go build -o hello_windows hello/hello.go
