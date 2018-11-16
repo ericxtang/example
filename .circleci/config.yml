@@ -10,6 +10,8 @@ jobs:
       - run: GOOS=darwin go build -o ~/artifacts/hello_darwin hello/hello.go
       - run: GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
   publish-github-release:
+    docker:
+      - image: circleci/golang:1.10.3-stretch
     requires:
       - build
     filters:
