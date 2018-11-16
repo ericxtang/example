@@ -1,12 +1,10 @@
-workflows:
-  version: 2 # use CircleCI 2.0
-  jobs: # basic units of work in a run
-    build: # runs not using Workflows must have a `build` job as entry point
-      docker: # run the steps with Docker
-      # CircleCI Go images available at: https://hub.docker.com/r/circleci/golang/
-        - image: circleci/golang:1.10.3-stretch
-      steps:
-        - checkout
-        - run: GOOS=linux go build -o hello_linux hello/hello.go
-        - run: GOOS=darwin go build -o hello_darwin hello/hello.go
-        - run: GOOS=windows go build -o hello_windows hello/hello.go
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.10.3-stretch
+    steps:
+      - checkout
+      - run: GOOS=linux go build -o hello_linux hello/hello.go
+      - run: GOOS=darwin go build -o hello_darwin hello/hello.go
+      - run: GOOS=windows go build -o hello_windows hello/hello.go
