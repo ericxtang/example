@@ -10,25 +10,15 @@ jobs:
       - run: GOOS=linux go build -o ~/artifacts/hello_linux hello/hello.go
       - run: GOOS=darwin go build -o ~/artifacts/hello_darwin hello/hello.go
       - run: GOOS=windows go build -o ~/artifacts/hello_windows hello/hello.go
-
-      - store_artifacts:
-          path: ~/artifacts
-  publish-github-release:
-    docker:
-      - image: circleci/golang:1.10.3-stretch
-    steps:
-      - attach_workspace:
-          at: ~/artifacts
       - run: go get github.com/tcnksm/ghr 
       - run: export VERSION=$(~/artifacts/hello_linux -version) 
       - run: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ~/artifacts/
+
+      - store_artifacts:
+          path: ~/artifacts
 
 workflows:
   version: 2
   build_and_release: 
     jobs: 
       - build
-
-      - publish-github-release:
-          requires: 
-            - build
